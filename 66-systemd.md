@@ -1,6 +1,6 @@
-# Capítulo 60: Systemd 260.2
+# Capítulo 66: Systemd 260.2
 
-## 60.1 — Objetivo
+## 66.1 — Objetivo
 
 The systemd package contains programs for controlling the startup, running, and shutdown of the system. 
    
@@ -50,14 +50,16 @@ meson setup ..                \
       -D docdir=/usr/share/doc/systemd
 ninja
 
-nija install
-
+ninja install
 ```
 
-## 60.4 — Verificar
+## 66.4 — Verificar
 
 ```
-automake --version
-# automake (GNU Automake) 1.18.1
+file /usr/lib/systemd/systemd
+# → ELF ... pie executable ... interpreter /lib/ld-musl-x86_64.so.1
+
+/usr/lib/systemd/systemd --version
+# → systemd 260.2
 
 ```

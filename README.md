@@ -74,11 +74,11 @@ Fase CHROOT (dentro del chroot musl, sin nada del host)
 ├── 61-gperf.md            ← gperf 3.3
 ├── 62-gettext.md          ← gettext (i18n)
 ├── 63-coreutils.md        ← Coreutils 9.11
-│
-Anexos
-├── 99-git.md              ← Git 2.49.0
-├── 99-plocate.md          ← plocate 1.1.23
-└── 99-systemd.md          ← systemd 260.2
+├── 64-cpio.md             ← Cpio 2.15 (para initramfs)
+├── 65-neonatox-initramfs-tools.md ← build-tools.sh (busybox, bash, e2fsprogs estáticos)
+├── 66-systemd.md          ← Systemd 260.2
+├── 67-primer-arranque.md  ← GRUB + kernel + initramfs + primer boot
+└── 68-live-iso.md         ← ISO booteable con squashfs + overlay
 ```
 
 ## Convenciones
