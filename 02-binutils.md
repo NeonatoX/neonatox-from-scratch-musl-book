@@ -1,4 +1,4 @@
-# Capítulo 2: Linux API Headers + Binutils 2.44
+# Capítulo 2: Linux API Headers + Binutils 2.46.1
 
 ## 2.1 — Objetivo
 
@@ -15,7 +15,7 @@ toolchain temporal.
 
 ## 2.3 — Linux API Headers
 
-```
+```bash
 cd $LFS/sources
 tar -xf linux-7.1.tar.xz
 cd linux-7.1
@@ -29,8 +29,8 @@ rm -rf linux-7.1
 
 Verificar:
 
-```
-ls $LFS/tools/include/linux/kernel.h
+```bash
+ls $LFS/tools/usr/include/linux/kernel.h
 # debe existir
 ```
 
@@ -38,7 +38,7 @@ ls $LFS/tools/include/linux/kernel.h
 
 ## 2.4 — Compilar binutils
 
-```
+```bash
 cd $LFS/build
 tar -xf $LFS/sources/binutils-2.46.1.tar.xz
 cd binutils-2.46.1
@@ -59,59 +59,11 @@ make install
 
 ### Verificar
 
-```
+```bash
 $LFS/tools/bin/x86_64-linux-musl-ld --version
 # → GNU ld (GNU Binutils) 2.46.1
 ```
 
 ---
 
-## 2.5 — Receta nhoid: binutils
-
-```nhoid
-#%NHO-0.5
-# Package Maintainer:	cargabsj175 <cargabsj175@gmail.com>
-
-# Name:	binutils
-# Version:	2.46.1
-# Release:	n2026
-# License:	GPL-3.0-only
-# Repository:	core
-# Arch:	x86_64
-# Url:	https://sourceware.org/binutils/
-# Description:	GNU binutils (stage 1, cross-compiled)
-# Packageurl:	https://sourceware.org/pub/binutils/releases/binutils-2.46.1.tar.xz
-# SHA256:	<pendiente>
-
-# BuildDep:	linux-api-headers
-
-nbuild() {
-mkdir -p build && cd build
-../configure \
-  --prefix=$LFS/tools \
-  --target=x86_64-linux-musl \
-  --with-sysroot=$LFS/tools \
-  --disable-nls \
-  --enable-gprofng=no \
-  --disable-werror
-make -j$(nproc)
-}
-
-ninstall() {
-cd build && make install
-}
-
-npostinstall() {
-noemptyfuncs
-}
-
-npostremove() {
-noemptyfuncs
-}
-```
-
----
-
-## Siguiente paso
-
-[03-gcc-minimal.md](03-gcc-minimal.md) — GCC 14.2.0 pass 1 (solo C, estático).
+<< [Anterior](01-entorno.md) | [Índice](README.md) | [Siguiente](03-gcc-minimal.md) >>

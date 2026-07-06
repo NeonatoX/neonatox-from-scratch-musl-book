@@ -46,13 +46,13 @@ mount -vt tmpfs tmpfs $LFS/run
 ## 14.4 — Chroot
 
 ```
-chroot "$LFS" /usr/bin/env -i \
+chroot "$LFS" /usr/bin/busybox env -i \
   HOME=/root \
   TERM="$TERM" \
   PS1='(musl chroot) \u [ \w ]# ' \
-  PATH=/usr/bin:/bin:/sbin \
+  PATH=/usr/local/bin:/usr/bin:/bin:/sbin \
   LC_ALL=POSIX \
-  /bin/bash --login
+  /bin/busybox sh -l
 ```
 
 Si todo funciona, deberías ver:
@@ -125,3 +125,7 @@ Solución de emergencia: entrar con busybox ash:
 ```
 chroot "$LFS" /bin/busybox ash
 ```
+
+---
+
+<< [Anterior](13-archivos-sistema.md) | [Índice](README.md) | [Siguiente](15-ncurses.md) >>

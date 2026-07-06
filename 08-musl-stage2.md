@@ -14,7 +14,7 @@ Compilar musl como shared library + static para el sistema final en
 
 ## 8.3 — Compilar
 
-```
+```bash
 cd $LFS/sources
 rm -rf musl-1.2.6
 tar -xf musl-1.2.6.tar.gz
@@ -36,13 +36,13 @@ make DESTDIR=$LFS install
 
 Primero copiar el binario real (musl install no siempre copia libc.so):
 
-```
+```bash
 cp $LFS/sources/musl-1.2.6/lib/libc.so $LFS/usr/lib/libc.so
 ```
 
 Luego crear los symlinks:
 
-```
+```bash
 ln -sf libc.so $LFS/usr/lib/ld-musl-x86_64.so.1
 
 # GCC busca el linker dinámico en /lib, no en /usr/lib
@@ -51,7 +51,7 @@ ln -sf ../usr/lib/libc.so $LFS/lib/libc.so
 ln -sf ../usr/lib/ld-musl-x86_64.so.1 $LFS/lib/ld-musl-x86_64.so.1
 ```
 
-| Advertencia: no usar `ln -sf` **después** del `cp` en el mismo
+> **Advertencia**: no usar `ln -sf` **después** del `cp` en el mismo
 directorio (`$LFS/usr/lib/`), porque sobrescribe `libc.so` con un
 symlink roto. Primero `cp`, luego los symlinks en orden.
 
@@ -59,7 +59,7 @@ symlink roto. Primero `cp`, luego los symlinks en orden.
 
 ## 8.4 — Verificar
 
-```
+```bash
 file $LFS/usr/lib/libc.so
 # → ELF 64-bit LSB shared object, ... dynamically linked
 
@@ -69,8 +69,12 @@ ls -la $LFS/usr/lib/libc.a
 
 ### Probar que el cross-compiler enlaza dinámico
 
-```
+```bash
 echo 'int main(){return 0;}' | $LFS/tools/bin/x86_64-linux-musl-gcc -x c - -o /tmp/test2
 file /tmp/test2
 # → ELF ... interpreter /lib/ld-musl-x86_64.so.1, dynamically linked
 ```
+
+---
+
+<< [Anterior](07-binutils-stage2.md) | [Índice](README.md) | [Siguiente](09-gcc-stage2.md) >>

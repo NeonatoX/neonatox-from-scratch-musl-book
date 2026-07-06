@@ -15,7 +15,7 @@ network tools) dentro del chroot y eventualmente en el sistema final.
 
 ## 10.3 — Compilar
 
-```
+```bash
 cd $LFS/sources
 # Descargar si no existe: https://busybox.net/downloads/busybox-1.36.1.tar.bz2
 # O usar busybox git
@@ -53,10 +53,14 @@ la compilación y solo crear los symlinks.
 
 ## 10.4 — Verificar
 
-```
+```bash
 file $LFS/bin/busybox
 # → ELF ... statically linked, musl
 
 $LFS/bin/busybox --list | head -5
 # → ash, cat, chmod, cp, ...
 ```
+
+---
+
+<< [Anterior](09-gcc-stage2.md) | [Índice](README.md) | [Siguiente](11-make.md) >>

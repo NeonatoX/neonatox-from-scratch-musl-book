@@ -25,7 +25,7 @@ chroot y seguiremos desde ahí.
 
 Identificar el disco (`lsblk`) y particionar:
 
-```
+```bash
 # fdisk /dev/sdX
 ```
 
@@ -33,13 +33,13 @@ Crear una partición primaria tipo Linux.
 
 Formatear como ext4:
 
-```
+```bash
 # mkfs.ext4 /dev/sdX1
 ```
 
 Montar:
 
-```
+```bash
 # mount /dev/sdX1 /mnt
 ```
 
@@ -50,11 +50,11 @@ Montar:
 Estructura completa del sistema (NeonatoX / LFS). Usamos la misma que
 `01-base-neonatox.sh` del proyecto neonatox-bootstrap.
 
-```
+```bash
 export LFS=/mnt
 
 # Directorios de toolchain (temporales)
-mkdir -pv $LFS/{tools,cross,sources,build}
+mkdir -pv $LFS/{tools,sources}
 
 # usr merge
 mkdir -pv $LFS/usr/{bin,lib,lib32}
@@ -64,6 +64,7 @@ ln -sfv usr/lib   $LFS/lib
 ln -sfv usr/lib   $LFS/lib64
 ln -sfv usr/lib32 $LFS/lib32
 ln -sfv bin       $LFS/usr/sbin
+ln -sfv lib   $LFS/usr/lib64
 
 # Sistemas de archivos virtuales
 mkdir -pv $LFS/{dev,proc,sys,run}
@@ -123,23 +124,22 @@ rompe todos los binarios C++ dinámicos dentro del chroot. Por eso:
   > **Cuidado**: ese archivo **reemplaza** las rutas por defecto de musl,
   > no las extiende. Si solo pones `/usr/lib64`, musl deja de buscar en
   > `/lib` y `/usr/lib`, rompiendo todo el sistema.
-```
 
 ---
 
 ## 1.6 — Copiar musl-cross
 
-```
+```bash
 cp -a /opt/cross-x86_64-linux-musl/* $LFS/cross/
 ```
 
 Verificar:
 
-```
+```bash
 $LFS/cross/bin/x86_64-linux-musl-gcc --version
 $LFS/cross/bin/x86_64-linux-musl-gcc -dumpmachine
 # → x86_64-linux-musl
-```
+
 
 Este compilador depende del glibc del host para funcionar. Eso es normal.
 Lo usamos solo para la etapa inicial (compilar musl dinámico y GCC nativo).
@@ -148,47 +148,19 @@ Lo usamos solo para la etapa inicial (compilar musl dinámico y GCC nativo).
 
 ## 1.7 — Variables de entorno
 
-```
-export LFS=/mnt
+
 export PATH="$LFS/cross/bin:$PATH"
 export MAKEFLAGS="-j$(nproc)"
 export LC_ALL=POSIX
-```
+
 
 Agregar opcionalmente a `~/.bashrc` para no tener que escribirlas cada vez.
 
 ---
 
-## 1.8 — Descargar fuentes (tarballs)
-
-```
-cd $LFS/sources
-
-# musl 1.2.6
-wget https://musl.libc.org/releases/musl-1.2.6.tar.gz
-
-# binutils 2.46.1
-wget https://sourceware.org/pub/binutils/releases/binutils-2.46.1.tar.xz
-
-# GCC 16.1.0
-wget https://ftpmirror.gnu.org/gcc/gcc-16.1.0/gcc-16.1.0.tar.xz
-
-# Linux API headers
-wget https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.1.tar.xz
-
-# GMP 6.3.0 (para GCC)
-wget https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz
-
-# MPFR 4.2.1 (para GCC)
-wget https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.1.tar.xz
-
-# MPC 1.3.1 (para GCC)
-wget https://ftp.gnu.org/gnu/mpc/mpc-1.3.1.tar.gz
-```
-
 Verificar integridad (sha256):
 
-```
+```bash
 sha256sum musl-1.2.5.tar.gz
 ```
 
@@ -196,7 +168,7 @@ sha256sum musl-1.2.5.tar.gz
 
 ## 1.9 — Estructura final
 
-```
+```bash
 /mnt/
 ├── cross/             # musl-cross semilla (glibc-host dependiente)
 │   ├── bin/
@@ -213,7 +185,7 @@ sha256sum musl-1.2.5.tar.gz
 
 ## 1.10 — Verificación final
 
-```
+```bash
 echo $LFS       # → /mnt
 echo $PATH      # → .../cross/bin:...
 x86_64-linux-musl-gcc --version
@@ -222,51 +194,12 @@ ls $LFS/sources/*.tar.*   # tarballs listos
 
 ---
 
-## Receta nhoid documentada: musl-cross
-
-```nhoid
-#%NHO-0.5
-# Package Maintainer:	cargabsj175 <cargabsj175@gmail.com>
-
-# Name:	musl-cross-make
-# Version:	0.9.11
-# Release:	n2026
-# License:	custom
-# Repository:	extra
-# Arch:	x86_64
-# Url:	https://github.com/richfelker/musl-cross-make
-# Description:	Cross-compiler GCC + musl estático (semilla para toolchain)
-# Packageurl:	https://github.com/richfelker/musl-cross-make.git
-# Packageref:	v0.9.11
-
-nbuild() {
-cat > config.mak << EOF
-TARGET = x86_64-linux-musl
-OUTPUT = /opt/cross-x86_64-linux-musl
-EOF
-make -j$(nproc)
-}
-
-ninstall() {
-make install
-}
-
-npostinstall() {
-noemptyfuncs
-}
-
-npostremove() {
-noemptyfuncs
-}
-```
 
 **Nota**: musl-cross se compila en el host (con glibc). El binario resultante
 se copia a `$LFS/cross/`. No es un paquete que se instale con nhopkg dentro
 del sistema musl, sino una herramienta externa de bootstrap.
 
+
 ---
 
-## Siguiente paso
-
-[02-musl-dinamico.md](02-musl-dinamico.md) — Compilar musl 1.2.5 como shared
-library en `$LFS/tools`.
+<< Anterior | [Índice](README.md) | [Siguiente](02-binutils.md) >>

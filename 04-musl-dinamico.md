@@ -15,7 +15,7 @@ musl es la primera pieza del sistema que es completamente nativa (no cruzada).
 
 ## 4.3 — Compilar musl
 
-```
+```bash
 cd $LFS/build
 rm -rf musl-1.2.6  # limpiar por si existe
 tar -xf $LFS/sources/musl-1.2.6.tar.gz
@@ -43,17 +43,43 @@ make install
 
 ### Verificar
 
-```
-$LFS/tools/lib/libc.so
-# Debe ser un ejecutable musl nativo (sin interpreter glibc)
 
-$LFS/tools/lib/libc.so
-# Debe imprimir versión → "musl libc (x86_64) ... release 1.2.6"
+```bash
+echo 'int main(){}' > t.c
+
+$LFS/tools/bin/x86_64-linux-musl-gcc t.c -o t
+
+file t
+
+readelf -l t | grep interpreter
+
+```
+
+### Resultado esperado
+
+```bash
+ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, not stripped
+      [Requesting program interpreter: /lib/ld-musl-x86_64.so.1]
 ```
 
 ---
 
-## 4.4 — ¿Qué cambió?
+## 4.4 Actualizar el enlace del sysroot
+
+Los Linux API Headers solo proporcionan las interfaces del kernel (linux/, asm/, etc.). Tras instalar musl,
+los headers estándar de C (stdio.h, stdlib.h, string.h, etc.) pasan a residir en $LFS/tools/include. 
+Se actualiza el enlace del sysroot para que el compilador del target utilice el conjunto completo de headers de musl.
+
+```bash
+rm -rf "$LFS/tools/x86_64-linux-musl/include"
+
+ln -snf ../include \
+    "$LFS/tools/x86_64-linux-musl/include"
+```
+
+---
+
+## 4.5 — ¿Qué cambió?
 
 Ahora tenemos `$LFS/tools/lib/libc.so` — la primera librería 100% musl.
 El GCC pass 1 que usamos para compilarla es estático (no necesita libc).
@@ -62,51 +88,4 @@ un binario musl.
 
 ---
 
-## 4.5 — Receta nhoid: musl
-
-```nhoid
-#%NHO-0.5
-# Package Maintainer:	cargabsj175 <cargabsj175@gmail.com>
-
-# Name:	musl
-# Version:	1.2.6
-# Release:	n2026
-# License:	MIT
-# Repository:	core
-# Arch:	x86_64
-# Url:	https://musl.libc.org/
-# Description:	musl libc — shared library (stage 1 toolchain)
-# Packageurl:	https://musl.libc.org/releases/musl-1.2.6.tar.gz
-# SHA256:	<pendiente>
-
-# BuildDep:	gcc-pass1 binutils linux-api-headers
-
-nbuild() {
-./configure \
-  CROSS_COMPILE=x86_64-linux-musl- \
-  --prefix=$LFS/tools \
-  --target=x86_64-linux-musl \
-  --enable-shared \
-  --disable-static
-make -j$(nproc)
-}
-
-ninstall() {
-make install
-}
-
-npostinstall() {
-noemptyfuncs
-}
-
-npostremove() {
-noemptyfuncs
-}
-```
-
----
-
-## Siguiente paso
-
-[05-gcc-completo.md](05-gcc-completo.md) — GCC 16.1.0 completo (C++, shared,
-threads) contra musl.
+<< [Anterior](03-gcc-minimal.md) | [Índice](README.md) | [Siguiente](05-gcc-completo.md) >>

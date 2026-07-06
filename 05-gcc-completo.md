@@ -21,25 +21,22 @@ GCC con `--target=x86_64-linux-musl --with-sysroot=$LFS/tools` busca los
 headers del sistema en `$LFS/tools/x86_64-linux-musl/include/`. musl instaló
 los suyos en `$LFS/tools/include/`. Hay que copiarlos:
 
-```
+```bash
 cp -r $LFS/tools/include/* $LFS/tools/x86_64-linux-musl/include/
 ```
 
 ## 5.4 — Compilar GCC completo
 
-```
+```bash
 cd $LFS/build
 rm -rf gcc-16.1.0  # empezar limpio
 tar -xf $LFS/sources/gcc-16.1.0.tar.xz
 cd gcc-16.1.0
 
-# GMP, MPFR, MPC (igual que pass 1)
-tar -xf $LFS/sources/gmp-6.3.0.tar.xz
-mv gmp-6.3.0 gmp
-tar -xf $LFS/sources/mpfr-4.2.1.tar.xz
-mv mpfr-4.2.1 mpfr
-tar -xf $LFS/sources/mpc-1.3.1.tar.gz
-mv mpc-1.3.1 mpc
+# GMP, MPFR, MPC dentro del árbol (igual que pass 1)
+tar -xf ../gmp-6.3.0.tar.xz && mv gmp-*/ gmp
+tar -xf ../mpfr-4.2.1.tar.xz && mv mpfr-*/ mpfr
+tar -xf ../mpc-1.3.1.tar.gz && mv mpc-*/ mpc
 
 mkdir build && cd build
 
@@ -65,7 +62,7 @@ make -j$(nproc) 2>&1 | tee build.log
 make install
 ```
 
-| Nota: usamos `--host=x86_64-pc-linux-gnu` (glibc del build host) porque
+> **Nota**: usamos `--host=x86_64-pc-linux-gnu` (glibc del build host) porque
 `--host=x86_64-linux-musl` requiere que configure ejecute test programs
 musl-linked en el host glibc, lo cual no es posible. El GCC resultante es
 glibc-linked pero produce binarios musl vía `--with-sysroot`.
@@ -91,19 +88,19 @@ glibc-linked pero produce binarios musl vía `--with-sysroot`.
 Antes de compilar, asegurarse de que el linker dinámico musl exista en el
 sysroot (lo necesita el build system de GCC para linkear los binarios):
 
-```
+```bash
 ln -sf libc.so $LFS/tools/lib/ld-musl-x86_64.so.1
 ```
 
 ### Limpiar build anterior (si existe)
 
-```
+```bash
 rm -rf $LFS/sources/gcc-16.1.0/build
 ```
 
 ### Verificar compilación simple
 
-```
+```bash
 echo 'int main(){ return 0; }' > /tmp/test.c
 $LFS/tools/bin/x86_64-linux-musl-gcc -o /tmp/test /tmp/test.c
 file /tmp/test
@@ -116,14 +113,14 @@ file /tmp/test
 
 El GCC y binutils en `$LFS/tools/bin/` son glibc-linked (temporales):
 
-```
+```bash
 readelf -l /tools/bin/x86_64-linux-musl-gcc | grep interpreter
 # → /lib64/ld-linux-x86-64.so.2  (glibc — esperado)
 ```
 
 Pero los binarios que produce son musl nativos:
 
-```
+```bash
 $LFS/tools/bin/x86_64-linux-musl-gcc hello.c -o hello
 file hello
 # → ... interpreter /lib/ld-musl-x86_64.so.1, musl
@@ -137,7 +134,7 @@ Antes del chroot, crear los archivos mínimos que necesita el sistema.
 
 ### 5.6.1 — /etc/passwd
 
-```
+```bash
 cat > $LFS/etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/usr/bin/false
@@ -149,7 +146,7 @@ EOF
 
 ### 5.6.2 — /etc/group
 
-```
+```bash
 cat > $LFS/etc/group << "EOF"
 root:x:0:
 bin:x:1:daemon
@@ -177,7 +174,7 @@ EOF
 
 ### 5.6.3 — /etc/passwd y /etc/shadow root
 
-```
+```bash
 cat > $LFS/etc/shadow << "EOF"
 root:::::::: 
 EOF
@@ -188,12 +185,12 @@ cat > $LFS/etc/shells << "EOF"
 EOF
 ```
 
-| Nota: el campo de password vacío en shadow permite login sin
+> **Nota**: el campo de password vacío en shadow permite login sin
 contraseña. Se cambia después con `passwd` dentro del chroot.
 
 ### 5.6.4 — /etc/fstab (mínimo)
 
-```
+```bash
 cat > $LFS/etc/fstab << "EOF"
 # Sistema de archivos virtuales
 proc  /proc  proc  defaults  0 0
@@ -205,7 +202,7 @@ EOF
 
 ### 5.6.5 — /etc/resolv.conf
 
-```
+```bash
 cat > $LFS/etc/resolv.conf << "EOF"
 nameserver 1.1.1.1
 nameserver 8.8.8.8
@@ -214,7 +211,7 @@ EOF
 
 ### 5.6.6 — /etc/hosts
 
-```
+```bash
 cat > $LFS/etc/hosts << "EOF"
 127.0.0.1  localhost
 ::1        localhost
@@ -223,7 +220,7 @@ EOF
 
 ### 5.6.7 — /etc/profile
 
-```
+```bash
 cat > $LFS/etc/profile << "EOF"
 export PATH=/tools/bin:/usr/bin:/bin
 export LC_ALL=POSIX
@@ -252,70 +249,14 @@ Sin chroot: usar `x86_64-linux-musl-gcc` como cross-compiler desde el host
 glibc para compilar binutils, musl, GCC, busybox, bash directamente en
 `$LFS/usr`. Luego chroot limpio con sistema musl nativo.
 
-## 5.9 — Receta nhoid: gcc-completo
-
-```nhoid
-#%NHO-0.5
-# Package Maintainer:	cargabsj175 <cargabsj175@gmail.com>
-
-# Name:	gcc-completo
-# Version:	16.1.0
-# Release:	n2026
-# License:	GPL-3.0-only
-# Repository:	core
-# Arch:	x86_64
-# Url:	https://gcc.gnu.org/
-# Description:	GCC 16.1.0 completo (C, C++, shared, threads) contra musl
-# Packageurl:	https://ftpmirror.gnu.org/gcc/gcc-16.1.0/gcc-16.1.0.tar.xz
-# SHA256:	<pendiente>
-
-# BuildDep:	musl binutils gmp mpfr mpc
-
-nbuild() {
-tar -xf gmp-6.3.0.tar.xz && mv gmp-6.3.0 gmp
-tar -xf mpfr-4.2.1.tar.xz && mv mpfr-4.2.1 mpfr
-tar -xf mpc-1.3.1.tar.gz && mv mpc-1.3.1 mpc
-rm -rf build && mkdir build && cd build
-../configure \
-  --prefix=$LFS/tools \
-  --build=$(../config.guess) \
-  --host=x86_64-pc-linux-gnu \
-  --target=x86_64-linux-musl \
-  --with-sysroot=$LFS/tools \
-  --disable-nls \
-  --enable-languages=c,c++ \
-  --enable-shared \
-  --enable-threads=posix \
-  --enable-lto \
-  --enable-__cxa_atexit \
-  --disable-libsanitizer \
-  --disable-libvtv \
-  --disable-multilib \
-  --disable-bootstrap
-make -j$(nproc)
-}
-
-ninstall() {
-cd build && make install
-}
-
-npostinstall() {
-ln -sf libc.so $LFS/tools/lib/ld-musl-x86_64.so.1
-}
-
-npostremove() {
-noemptyfuncs
-}
-```
-
 ---
 
-## 5.10 — Backup de la toolchain stage 1
+## 5.9 — Backup de la toolchain stage 1
 
 Opcional pero recomendado. Este backup permite volver a este punto sin tener
 que recompilar todo desde cero.
 
-```
+```bash
 # Desde el host (afuera del chroot)
 cd $LFS
 tar -cJpf $LFS/sources/tools-stage1-$(date +%Y%m%d).tar.xz tools/
@@ -323,7 +264,7 @@ tar -cJpf $LFS/sources/tools-stage1-$(date +%Y%m%d).tar.xz tools/
 
 Para restaurar:
 
-```
+```bash
 cd $LFS
 rm -rf tools
 tar -xpf $LFS/sources/tools-stage1-*.tar.xz
@@ -333,7 +274,4 @@ Tamaño estimado: ~500-600 MB comprimido (incluye binutils + GCC completos).
 
 ---
 
-## Siguiente paso
-
-[06-linux-headers.md](06-linux-headers.md) — Linux API headers para `$LFS/usr`.
-El inicio del stage 2: cross-compilar la toolchain final desde el host glibc.
+<< [Anterior](04-musl-dinamico.md) | [Índice](README.md) | [Siguiente](06-linux-headers.md) >>

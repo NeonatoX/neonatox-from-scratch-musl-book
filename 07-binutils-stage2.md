@@ -18,7 +18,7 @@ La compilación es cross (canadiense): `--build=x86_64-pc-linux-gnu`
 
 ## 7.3 — Compilar
 
-```
+```bash
 cd $LFS/sources
 rm -rf binutils-2.46.1
 tar -xf binutils-2.46.1.tar.xz
@@ -40,7 +40,15 @@ AR=x86_64-linux-musl-ar \
 make -j$(nproc) 2>&1 | tee build.log
 
 make DESTDIR=$LFS install
+
+ln -sf ar      $LFS/usr/bin/x86_64-linux-musl-ar
+ln -sf ranlib  $LFS/usr/bin/x86_64-linux-musl-ranlib
+ln -sf nm      $LFS/usr/bin/x86_64-linux-musl-nm
+ln -sf strip   $LFS/usr/bin/x86_64-linux-musl-strip
+
 ```
+
+
 
 ### Explicación
 
@@ -56,7 +64,7 @@ make DESTDIR=$LFS install
 
 ## 7.4 — Verificar
 
-```
+```bash
 file $LFS/usr/bin/ld
 # → ELF ... interpreter /lib/ld-musl-x86_64.so.1, musl
 
@@ -66,3 +74,7 @@ file $LFS/usr/bin/as $LFS/usr/bin/ar
 ```
 
 Si ves `ld-linux-x86-64.so.2`, algo falló (sigue glibc-linked).
+
+---
+
+<< [Anterior](06-linux-headers.md) | [Índice](README.md) | [Siguiente](08-musl-stage2.md) >>

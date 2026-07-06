@@ -16,7 +16,7 @@ ni tiene C++. Es una herramienta temporal.
 GCC necesita las bibliotecas GMP, MPFR y MPC. Las incluimos dentro del árbol
 de fuentes de GCC para que se compilen automáticamente:
 
-```
+```bash
 cd $LFS/sources
 
 # GMP
@@ -33,20 +33,16 @@ wget https://ftp.gnu.org/gnu/mpc/mpc-1.3.1.tar.gz
 
 ## 3.3 — Preparar fuentes
 
-```
+```bash
 cd $LFS/build
 tar -xf $LFS/sources/gcc-16.1.0.tar.xz
 cd gcc-16.1.0
 
 # GMP, MPFR, MPC dentro del árbol
-tar -xf $LFS/sources/gmp-6.3.0.tar.xz
-mv gmp-6.3.0 gmp
+tar -xf ../gmp-6.3.0.tar.xz && mv gmp-*/ gmp
+tar -xf ../mpfr-4.2.1.tar.xz && mv mpfr-*/ mpfr
+tar -xf ../mpc-1.3.1.tar.gz && mv mpc-*/ mpc
 
-tar -xf $LFS/sources/mpfr-4.2.1.tar.xz
-mv mpfr-4.2.1 mpfr
-
-tar -xf $LFS/sources/mpc-1.3.1.tar.gz
-mv mpc-1.3.1 mpc
 ```
 
 ---
@@ -54,17 +50,16 @@ mv mpc-1.3.1 mpc
 ## 3.4 — Preparar headers donde GCC los espera
 
 GCC con `--target=x86_64-linux-musl --with-sysroot=$LFS/tools` busca headers
-en `$LFS/tools/x86_64-linux-musl/include/`. Hay que copiar los kernel headers
-ahí:
+en `$LFS/tools/x86_64-linux-musl/include/`. Creamos un enlace simbolico ahí:
 
-```
-mkdir -p $LFS/tools/x86_64-linux-musl/include
-cp -r $LFS/tools/usr/include/* $LFS/tools/x86_64-linux-musl/include/
+```bash
+ln -svf ../usr/include/ $LFS/tools/x86_64-linux-musl/include
+
 ```
 
 ## 3.5 — Compilar GCC pass 1
 
-```
+```bash
 cd $LFS/build/gcc-16.1.0
 rm -rf build
 mkdir build && cd build
@@ -108,7 +103,7 @@ make install
 
 ### Verificar
 
-```
+```bash
 $LFS/tools/bin/x86_64-linux-musl-gcc --version
 # → gcc (GCC) 16.1.0
 
@@ -131,69 +126,4 @@ herramienta descartable que se reemplazará después.
 
 ---
 
-## 3.7 — Receta nhoid: gcc-pass1
-
-```nhoid
-#%NHO-0.5
-# Package Maintainer:	cargabsj175 <cargabsj175@gmail.com>
-
-# Name:	gcc-pass1
-# Version:	16.1.0
-# Release:	n2026
-# License:	GPL-3.0-only
-# Repository:	core
-# Arch:	x86_64
-# Url:	https://gcc.gnu.org/
-# Description:	GCC pass 1 — minimal C static compiler for bootstrapping musl
-# Packageurl:	https://ftpmirror.gnu.org/gcc/gcc-16.1.0/gcc-16.1.0.tar.xz
-# SHA256:	<pendiente>
-
-# BuildDep:	binutils gmp mpfr mpc
-
-nbuild() {
-tar -xf gmp-6.3.0.tar.xz && mv gmp-6.3.0 gmp
-tar -xf mpfr-4.2.1.tar.xz && mv mpfr-4.2.1 mpfr
-tar -xf mpc-1.3.1.tar.gz && mv mpc-1.3.1 mpc
-mkdir build && cd build
-mkdir -p $LFS/tools/x86_64-linux-musl/include
-cp -r $LFS/tools/usr/include/* $LFS/tools/x86_64-linux-musl/include/
-mkdir build && cd build
-../configure \
-  --prefix=$LFS/tools \
-  --build=$(../config.guess) \
-  --host=$(../config.guess) \
-  --target=x86_64-linux-musl \
-  --with-sysroot=$LFS/tools \
-  --without-headers \
-  --with-newlib \
-  --disable-nls \
-  --enable-languages=c \
-  --disable-shared \
-  --disable-threads \
-  --disable-libatomic \
-  --disable-libgomp \
-  --disable-libquadmath \
-  --disable-libssp \
-  --disable-libvtv \
-  --disable-libstdcxx
-make -j$(nproc)
-}
-
-ninstall() {
-cd build && make install
-}
-
-npostinstall() {
-noemptyfuncs
-}
-
-npostremove() {
-noemptyfuncs
-}
-```
-
----
-
-## Siguiente paso
-
-[04-musl-dinamico.md](04-musl-dinamico.md) — musl 1.2.6 (shared library).
+<< [Anterior](02-binutils.md) | [Índice](README.md) | [Siguiente](04-musl-dinamico.md) >>
