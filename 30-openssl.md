@@ -23,7 +23,7 @@ cd /sources
 tar xf openssl-4.0.1.tar.gz
 cd openssl-4.0.1
 
-./Configure linux-x86_64 \
+./Configure linux-$(uname -m) \
             --prefix=/usr \
             --openssldir=/etc/ssl \
             --libdir=/lib \
