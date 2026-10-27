@@ -1,10 +1,9 @@
 # Capítulo 51: Nhopkg desde git
 
-## 51.1 — Objetivo
+## 51.1 — Descripcion
 
-Compilar Git 2.54.0 en `/usr`. Sistema de control de versiones
-distribuido. Dependencia de nhopkg para gestionar paquetes `.srcnho`
-desde repositorios Git.
+Nhopkg is a universal package manager designed to work on any GNU/Linux distribution with bash.
+
 
 ## 51.2 — Dependencias
 
@@ -27,12 +26,19 @@ git clone https://github.com/cargabsj175/neonatox-nhopkg.git
 ```bash
     cd /sources
     cd neonatox-nhopkg/
-    meson setup build
-    
-    cd build
-    ninja
-    ninja install   
-    mkdir -p ${LFS}/var/nhopkg/{cache,files,logs,packages,repo}
+meson setup builddir \
+  -D binlocate=plocate \
+  -D repo-version=n27 \
+  -D repo-arch=$(uname -m)-musl \
+  -D libc=musl \
+  -D git-branch=musl \
+  -D static-busybox=no \
+  -D static-zstd=no \
+  -D use-busybox=no
+ninja -C builddir
+
+ninja -C builddir install
+mkdir -p ${LFS}/var/nhopkg/{cache,files,logs,packages,repo}
 ```
 
 ## 51.4 — Verificar
@@ -40,7 +46,9 @@ git clone https://github.com/cargabsj175/neonatox-nhopkg.git
 ```bash
 nhopkg --version
 
-# Nhopkg version 0.5.1
+Versión de Nhopkg 2.1.0
+Nhopkg  Copyright (C) 2008-2009  Jaime Gil de Sagredo Luna <jaimegildesagredo@gmail.com>
+Nhopkg  Copyright (C) 2009-2026  Carlos Sánchez <cargabsj175@gmail.com>
 
 ```
 

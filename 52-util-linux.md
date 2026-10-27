@@ -95,7 +95,7 @@ ldd /usr/bin/mount | grep musl
 ### Otras notas
 
 - `--disable-login`, `--disable-nologin`, `--disable-su`: shadow
-  ya provee estas herramientas (capítulo 41).
+  ya provee estas herramientas (capítulo 67).
 - Sistema usr-merged: `--prefix=/usr` es suficiente — los binarios
   van a `/usr/bin/` y `/usr/sbin/`, accesibles vía `/bin -> usr/bin`
   y `/sbin -> usr/sbin`.
