@@ -77,8 +77,9 @@ para NeonatoX con musl como libc primaria.
 | 68 | [MarkupSafe](68-markupsafe.md) | MarkupSafe 3.0.2 |
 | 69 | [Jinja2](69-jinja2.md) | Jinja2 3.1.6 |
 | 70 | [systemd](70-systemd.md) | systemd 260.2 |
-| 71 | [btrfs-progs](71-btrfs-progs.md) | btrfs-progs 6.14 |
-| 72 | [e2fsprogs](72-e2fsprogs.md) | e2fsprogs 1.47.4 |
+| 71 | [texinfo](71-texinfo.md) | texinfo 7.3 |
+| 71 | [btrfs-progs](72-btrfs-progs.md) | btrfs-progs 6.14 |
+| 72 | [e2fsprogs](73-e2fsprogs.md) | e2fsprogs 1.47.4 |
 | 73 | [Initramfs Tools](73-neonatox-initramfs-tools.md) | neonatox-mkinitramfs |
 | — | [Live ISO](99-live-iso.md) | Construcción de ISO en vivo |
 | — | [Primer Arranque](99-primer-arranque.md) | Primer arranque del sistema musl |

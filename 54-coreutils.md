@@ -36,12 +36,8 @@ sed -i 's/"1"/"8"/' /usr/share/man/man8/chroot.8
 ## 54.4 — Verificar
 
 ```bash
-coreutils --version
-# GNU coreutils 9.11
-# Copyright (C) 2025 Free Software Foundation, Inc.
-
-file /usr/bin/coreutils          
-# /usr/bin/coreutils: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, with debug_info, not stripped
+file /usr/bin/whoami 
+/usr/bin/whoami: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, with debug_info, not stripped
 ```
 
 

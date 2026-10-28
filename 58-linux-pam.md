@@ -92,13 +92,16 @@ session     required        pam_deny.so
 
 # End /etc/pam.d/other
 EOF
+
 ```
+
 
 ## 41.5 — Verificar
 
 ```bash
-ldd /usr/lib/libpam.so
-# → libc.so => /lib/ld-musl-x86_64.so.1
+file /usr/lib/libpam.so.0.85.1 
+/usr/lib/libpam.so.0.85.1: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, with debug_info, not stripped
+
 ```
 
 ## 41.6 — Notas

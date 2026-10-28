@@ -59,4 +59,4 @@ initramfs/busybox --list | grep switch_root
 
 ---
 
-<< [Anterior](72-e2fsprogs.md) | [Índice](README.md) | [Siguiente](99-live-iso.md) >>
+<< [Anterior](73-btrfs-progs.md) | [Índice](README.md) | [Siguiente](99-live-iso.md) >>

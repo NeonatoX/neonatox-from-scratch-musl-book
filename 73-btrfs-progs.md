@@ -1,12 +1,12 @@
-# Capítulo 71: btrfs-progs 6.14
+# Capítulo 72: btrfs-progs 6.14
 
-## 71.1 — Objetivo
+## 72.1 — Objetivo
 
 Compilar btrfs-progs en `/usr`. Proporciona herramientas de gestión
 para el sistema de archivos btrfs, que es el filesystem primario del
 proyecto (usado desde Fase 0 con `compress=zstd:3`).
 
-## 71.2 — Dependencias
+## 72.2 — Dependencias
 
 - gcc, make (ya en el sistema)
 - util-linux 2.42.1 (capítulo 42) — libblkid, libuuid
@@ -15,13 +15,13 @@ proyecto (usado desde Fase 0 con `compress=zstd:3`).
 - Python 3.14.6 (capítulo 38, para bindings Python)
 - systemd (opcional, para unit files)
 
-## 71.3 — Descargar
+## 72.3 — Descargar
 
 ```bash
 wget https://mirrors.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v6.14.tar.xz
 ```
 
-## 71.4 — Compilar
+## 72.4 — Compilar
 
 ```bash
 cd /sources
@@ -41,7 +41,7 @@ make -j$(nproc)
 make install
 ```
 
-## 71.5 — Verificar
+## 72.5 — Verificar
 
 ```bash
 btrfs --version
@@ -54,7 +54,7 @@ file /usr/bin/btrfs
 # → ELF ... dynamically linked ... interpreter /lib/ld-musl-x86_64.so.1
 ```
 
-## 71.6 — Notas
+## 72.6 — Notas
 
 - `--disable-libudev`: no se necesita detección de dispositivos udev
   durante stage 2 (systemd no está presente).
@@ -77,4 +77,4 @@ file /usr/bin/btrfs
 
 ---
 
-<< [Anterior](70-systemd.md) | [Índice](README.md) | [Siguiente](72-e2fsprogs.md) >>
+<< [Anterior](72-e2fsprogs.md) | [Índice](README.md) | [Siguiente](74-neonatox-initramfs-tools.md) >>

@@ -31,6 +31,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words  /usr/share/dict/crackli
 
 ```
 
+## 57.5 — Verificar
+
+```bash
+file /usr/lib/libcrack.so.2.9.0 
+/usr/lib/libcrack.so.2.9.0: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, with debug_info, not stripped
+```
 
 ---
 

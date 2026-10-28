@@ -19,16 +19,17 @@ rm -rf lzo-2.10
 tar xf lzo-2.10.tar.gz
 cd lzo-2.10
 
-./configure --prefix=/usr
+./configure --prefix=/usr --enable-shared
 make -j$(nproc)
+
 make install
 ```
 
 ## 55.4 — Verificar
 
 ```bash
-file /usr/lib/liblzo2.so
-# → ELF ... shared object
+file /usr/lib/liblzo2.so.2.0.0 
+/usr/lib/liblzo2.so.2.0.0: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, with debug_info, not stripped
 
 pkg-config --libs lzo2
 # → -llzo2

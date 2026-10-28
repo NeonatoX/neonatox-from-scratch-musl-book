@@ -13,13 +13,18 @@ wget https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2
 ## 66.4 — Compilar
 
 ```bash
-./configure --prefix=/usr    \
-            --disable-static \
-            --docdir=/usr/share/doc/libcap
-make
+sed -i '/install -m.*STA/d' libcap/Makefile
+make -j$(nproc) prefix=/usr lib=lib
+
+make DESTDIR=/usr lib=lib install
+```
 
 
-make install
+## 66.5 — Verificar
+
+```bash
+file /usr/lib/libcap.so.2.78 
+/usr/lib/libcap.so.2.78: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-x86_64.so.1, with debug_info, not stripped
 
 ```
 

@@ -1,22 +1,22 @@
-# Capítulo 72: e2fsprogs 1.47.4
+# Capítulo 71: e2fsprogs 1.47.4
 
-## 72.1 — Objetivo
+## 71.1 — Objetivo
 
 Compilar e2fsprogs 1.47.4 en `/usr`. Proporciona `mkfs.ext2/3/4`,
 `fsck.ext2/3/4`, `e2fsck`, `tune2fs`, `resize2fs`, `debugfs`,
 `dumpe2fs`, `lsattr`, `chattr`.
 
-## 72.2 — Dependencias
+## 71.2 — Dependencias
 
 - gcc, make (ya en el sistema)
 
-## 72.3 — Descargar
+## 71.3 — Descargar
 
 ```bash
 wget https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.4/e2fsprogs-1.47.4.tar.xz
 ```
 
-## 72.4 — Compilar
+## 71.4 — Compilar
 
 ```bash
 cd /sources
@@ -40,7 +40,7 @@ make
 make install
 ```
 
-## 72.5 — Verificar
+## 71.5 — Verificar
 
 ```bash
 file /usr/sbin/mkfs.ext4
@@ -50,7 +50,7 @@ file /usr/sbin/mkfs.ext4
 # → mke2fs 1.47.4
 ```
 
-## 72.6 — Notas
+## 71.6 — Notas
 
 - `--enable-elf-shlibs`: buildea shared libraries `libext2fs.so`, `libcom_err.so`, etc.
 - `--disable-libblkid` y `--disable-libuuid`: util-linux provee bibliotecas más completas
@@ -62,4 +62,4 @@ file /usr/sbin/mkfs.ext4
 
 ---
 
-<< [Anterior](71-btrfs-progs.md) | [Índice](README.md) | [Siguiente](73-neonatox-initramfs-tools.md) >>
+<< [Anterior](71-exinfo.md) | [Índice](README.md) | [Siguiente](73-btrfs-progs.md) >>

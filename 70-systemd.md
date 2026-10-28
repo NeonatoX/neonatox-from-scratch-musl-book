@@ -4,14 +4,14 @@
 
 The systemd package contains programs for controlling the startup, running, and shutdown of the system. 
    
-## 60.2 — Descargar
+## 70.2 — Descargar
 
 ```bash
 wget https://github.com/systemd/systemd/archive/v260.2/systemd-260.2.tar.gz
 
 ```
 
-## 60.3 — Compilar
+## 70.3 — Compilar
 
 ```bash
 cd /sources
@@ -19,7 +19,6 @@ tar xvf systemd-260.2.tar.gz
 cd systemd-260.2
 
 sed -i 's/SYSTEMD_TEST_DATA=%q\\nSYSTEMD_CATALOG_DIR=%q\\n/SYSTEMD_TEST_DATA=%s\\nSYSTEMD_CATALOG_DIR=%s\\n/g' meson.build
-
 mkdir -p build && cd build
 
 meson setup ..                \
@@ -52,7 +51,6 @@ ninja
 
 ninja install
 
-
 ```
 
 ## 70.4 — Verificar
@@ -69,4 +67,4 @@ file /usr/lib/systemd/systemd
 
 ---
 
-<< [Anterior](69-jinja2.md) | [Índice](README.md) | [Siguiente](71-btrfs-progs.md) >>
+<< [Anterior](69-jinja2.md) | [Índice](README.md) | [Siguiente](71-texinfo.md) >>

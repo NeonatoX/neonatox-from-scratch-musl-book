@@ -16,13 +16,19 @@ wget https://download.savannah.gnu.org/releases/acl/acl-2.6.0.tar.gz
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/acl
-make
+make -j$(nproc)
 
 
 make install
 
 ```
 
+## 65.5 — Verificar
+
+```bash
+file /usr/lib/libacl.so.1.1.2302
+/usr/lib/libacl.so.1.1.2302: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, with debug_info, not stripped
+```
 
 ---
 
